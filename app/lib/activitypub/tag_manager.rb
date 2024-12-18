@@ -47,9 +47,9 @@ class ActivityPub::TagManager
       end
     when :note, :comment, :activity
       if target.account.numeric_ap_id?
-        return activity_numeric_account_status_url(target.account, target) if target.reblog?
+        return activity_numeric_status_url(target.account, target) if target.reblog?
 
-        numeric_account_status_url(target.account.id, target)
+        numeric_status_url(target)
       else
         return activity_account_status_url(target.account, target) if target.reblog?
 
@@ -81,25 +81,25 @@ class ActivityPub::TagManager
   def activity_uri_for(target)
     raise ArgumentError, 'target must be a local activity' unless %i(note comment activity).include?(target.object_type) && target.local?
 
-    target.account.numeric_ap_id? ? activity_numeric_account_status_url(target.account.id, target) : activity_account_status_url(target.account, target)
+    target.account.numeric_ap_id? ? activity_numeric_status_url(target) : activity_account_status_url(target.account, target)
   end
 
   def replies_uri_for(target, page_params = nil)
     raise ArgumentError, 'target must be a local activity' unless %i(note comment activity).include?(target.object_type) && target.local?
 
-    target.account.numeric_ap_id? ? numeric_account_status_replies_url(target.account.id, target, page_params) : account_status_replies_url(target.account, target, page_params)
+    target.account.numeric_ap_id? ? numeric_status_replies_url(target, page_params) : account_status_replies_url(target.account, target, page_params)
   end
 
   def likes_uri_for(target)
     raise ArgumentError, 'target must be a local activity' unless %i(note comment activity).include?(target.object_type) && target.local?
 
-    target.account.numeric_ap_id? ? numeric_account_status_likes_url(target.account.id, target) : account_status_likes_url(target.account, target)
+    target.account.numeric_ap_id? ? numeric_status_likes_url(target) : account_status_likes_url(target.account, target)
   end
 
   def shares_uri_for(target)
     raise ArgumentError, 'target must be a local activity' unless %i(note comment activity).include?(target.object_type) && target.local?
 
-    target.account.numeric_ap_id? ? numeric_account_status_shares_url(target.account.id, target) : account_status_shares_url(target.account, target)
+    target.account.numeric_ap_id? ? numeric_status_shares_url(target) : account_status_shares_url(target.account, target)
   end
 
   def following_uri_for(target, ...)
