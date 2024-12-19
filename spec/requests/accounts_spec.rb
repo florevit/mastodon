@@ -7,7 +7,7 @@ RSpec.describe 'Accounts show response' do
 
   context 'with numeric-based identifiers' do
     it 'returns http success' do
-      get "/u/#{account.id}"
+      get "/ap/users/#{account.id}"
 
       expect(response).to have_http_status(200)
     end

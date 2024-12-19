@@ -41,15 +41,15 @@ class ActivityPub::TagManager
       if target.instance_actor?
         instance_actor_url
       elsif target.numeric_ap_id?
-        numeric_account_url(target.id)
+        ap_account_url(target.id)
       else
         account_url(target)
       end
     when :note, :comment, :activity
       if target.account.numeric_ap_id?
-        return activity_numeric_status_url(target.account, target) if target.reblog?
+        return activity_ap_status_url(target.account, target) if target.reblog?
 
-        numeric_status_url(target)
+        ap_status_url(target)
       else
         return activity_account_status_url(target.account, target) if target.reblog?
 
@@ -71,7 +71,7 @@ class ActivityPub::TagManager
   end
 
   def uri_for_account_id(id)
-    numeric_account_url(id: id)
+    ap_account_url(id: id)
   end
 
   def generate_uri_for(_target)
@@ -81,43 +81,43 @@ class ActivityPub::TagManager
   def activity_uri_for(target)
     raise ArgumentError, 'target must be a local activity' unless %i(note comment activity).include?(target.object_type) && target.local?
 
-    target.account.numeric_ap_id? ? activity_numeric_status_url(target) : activity_account_status_url(target.account, target)
+    target.account.numeric_ap_id? ? activity_ap_status_url(target) : activity_account_status_url(target.account, target)
   end
 
   def replies_uri_for(target, page_params = nil)
     raise ArgumentError, 'target must be a local activity' unless %i(note comment activity).include?(target.object_type) && target.local?
 
-    target.account.numeric_ap_id? ? numeric_status_replies_url(target, page_params) : account_status_replies_url(target.account, target, page_params)
+    target.account.numeric_ap_id? ? ap_status_replies_url(target, page_params) : account_status_replies_url(target.account, target, page_params)
   end
 
   def likes_uri_for(target)
     raise ArgumentError, 'target must be a local activity' unless %i(note comment activity).include?(target.object_type) && target.local?
 
-    target.account.numeric_ap_id? ? numeric_status_likes_url(target) : account_status_likes_url(target.account, target)
+    target.account.numeric_ap_id? ? ap_status_likes_url(target) : account_status_likes_url(target.account, target)
   end
 
   def shares_uri_for(target)
     raise ArgumentError, 'target must be a local activity' unless %i(note comment activity).include?(target.object_type) && target.local?
 
-    target.account.numeric_ap_id? ? numeric_status_shares_url(target) : account_status_shares_url(target.account, target)
+    target.account.numeric_ap_id? ? ap_status_shares_url(target) : account_status_shares_url(target.account, target)
   end
 
   def following_uri_for(target, ...)
     raise ArgumentError, 'target must be a local account' unless target.local?
 
-    target.numeric_ap_id? ? numeric_account_following_index_url(target.id, ...) : account_following_index_url(target, ...)
+    target.numeric_ap_id? ? ap_account_following_index_url(target.id, ...) : account_following_index_url(target, ...)
   end
 
   def followers_uri_for(target, ...)
     return target.followers_url.presence unless target.local?
 
-    target.numeric_ap_id? ? numeric_account_followers_url(target.id, ...) : account_followers_url(target, ...)
+    target.numeric_ap_id? ? ap_account_followers_url(target.id, ...) : account_followers_url(target, ...)
   end
 
   def collection_uri_for(target, ...)
     raise ArgumentError, 'target must be a local account' unless target.local?
 
-    target.numeric_ap_id? ? numeric_account_collection_url(target.id, ...) : account_collection_url(target, ...)
+    target.numeric_ap_id? ? ap_account_collection_url(target.id, ...) : account_collection_url(target, ...)
   end
 
   def inbox_uri_for(target)
@@ -126,7 +126,7 @@ class ActivityPub::TagManager
     if target.instance_actor?
       instance_actor_inbox_url
     elsif target.numeric_ap_id?
-      numeric_account_inbox_url(target.id)
+      ap_account_inbox_url(target.id)
     else
       account_inbox_url(target)
     end
@@ -138,7 +138,7 @@ class ActivityPub::TagManager
     if target.instance_actor?
       instance_actor_outbox_url(...)
     elsif target.numeric_ap_id?
-      numeric_account_outbox_url(target.id, ...)
+      ap_account_outbox_url(target.id, ...)
     else
       account_outbox_url(target, ...)
     end

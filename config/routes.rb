@@ -119,16 +119,18 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :accounts, path: 'u', only: [:show], param: :id, as: :numeric_account, concerns: :account_resources
+  scope path: 'ap', as: 'ap' do
+    resources :accounts, path: 'users', only: [:show], param: :id, concerns: :account_resources
 
-  resources :statuses, path: 's', only: [:show], as: :numeric_status do
-    member do
-      get :activity
+    resources :statuses, module: :activitypub, only: [:show] do
+      member do
+        get :activity
+      end
+
+      resources :replies, only: [:index]
+      resources :likes, only: [:index]
+      resources :shares, only: [:index]
     end
-
-    resources :replies, only: [:index], module: :activitypub
-    resources :likes, only: [:index], module: :activitypub
-    resources :shares, only: [:index], module: :activitypub
   end
 
   resource :inbox, only: [:create], module: :activitypub
